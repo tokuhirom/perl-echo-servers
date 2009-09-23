@@ -15,7 +15,7 @@ GetOptions(
 
 print "coro: http://localhost:$port/\n";
 print "concurrency: $concurrent\n";
-my $sock = Coro::Socket->new(LocalHost => 'localhost', LocalPort => $port, Listen => 10, ReuseAddr => 1);
+my $sock = Coro::Socket->new(LocalHost => '0.0.0.0', LocalPort => $port, Listen => 10, ReuseAddr => 1);
 my @coros;
 for my $i (1..$concurrent) {
     print "awake thread $i\n";
