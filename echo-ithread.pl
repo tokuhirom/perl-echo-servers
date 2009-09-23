@@ -11,7 +11,6 @@ GetOptions(
     'concurrent=s' => \$concurrent,
     'port=i' => \$port,
 );
-my $locker : shared;
 
 my $sock = IO::Socket::INET->new(
     LocalHost => 'localhost',
@@ -23,10 +22,7 @@ my @threads;
 for my $i (1..$concurrent) {
     push @threads, threads->create(sub {
         while (1) {
-            my $csock = do {
-                lock($locker);
-                $sock->accept;
-            };
+            my $csock = $sock->accept;
             while (my $line = <$csock>) {
                 print $csock $line;
             }
