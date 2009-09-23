@@ -13,7 +13,7 @@ GetOptions(
 );
 
 my $sock = IO::Socket::INET->new(
-    LocalHost => 'localhost',
+    LocalHost => '0.0.0.0',
     LocalPort => $port,
     Listen    => 10,
     ReuseAddr => 1
