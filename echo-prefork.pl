@@ -16,7 +16,7 @@ print "$0: http://localhost:$port/\n";
 print "concurrency: $concurrent\n";
 
 my $sock = IO::Socket::INET->new(
-    LocalHost => 'localhost',
+    LocalHost => '0.0.0.0',
     LocalPort => $port,
     Listen    => 10,
     ReuseAddr => 1
