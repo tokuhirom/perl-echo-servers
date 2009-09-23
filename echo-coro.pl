@@ -3,6 +3,7 @@ use warnings;
 use Coro;
 use Coro::Socket;
 use Coro::Semaphore;
+use Coro::Event;
 use Getopt::Long;
 
 my $concurrent = 10;
@@ -27,5 +28,6 @@ for my $i (1..$concurrent) {
         }
     };
 }
+push @coros, async { Event::loop() };
 $_->join for @coros;
 
