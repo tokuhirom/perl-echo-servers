@@ -9,9 +9,10 @@ my $concurrent = 10;
 my $port = 9010;
 GetOptions(
     'concurrent=s' => \$concurrent,
+    'port=i' => \$port,
 );
 
-print "coro: http://localhost:9010/\n";
+print "coro: http://localhost:$port/\n";
 print "concurrency: $concurrent\n";
 my $sock = Coro::Socket->new(LocalHost => 'localhost', LocalPort => $port, Listen => 10, ReuseAddr => 1);
 my @coros;
