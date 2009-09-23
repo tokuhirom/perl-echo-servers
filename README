@@ -1,0 +1,15 @@
+= get manymanythreads & picoev. =
+
+git clone git://github.com/kazuho/manymanythreads.git 
+svn co http://svn.coderepos.org/share/lang/c/picoev/trunk
+
+= compile it =
+
+g++ -o echobench -I . testechoclient.c picoev_kqueue.c
+
+= and run =
+
+-a and -c should be same value.
+
+./echobench -p 9090 -a 100 -c 100 -h 127.0.0.1 -n 100000
+
