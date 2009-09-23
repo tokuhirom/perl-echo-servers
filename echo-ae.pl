@@ -5,15 +5,12 @@ use Getopt::Long;
 use AnyEvent::Socket;
 use AnyEvent::Handle;
 
-my $concurrent = 10;
 my $port = 9010;
 GetOptions(
-    'concurrent=s' => \$concurrent,
     'port=i' => \$port,
 );
 
-print "coro: http://localhost:$port/\n";
-print "concurrency: $concurrent\n";
+print "$0: http://localhost:$port/\n";
 tcp_server undef, $port, sub {
     my ($fh, $host, $port) = @_;
     my $sock = AnyEvent::Handle->new(fh => $fh);
