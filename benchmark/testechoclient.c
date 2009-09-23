@@ -105,7 +105,6 @@ int main(int argc, char** argv)
       perror("could not connect to server");
       exit(2);
     }
-    printf("connected\n");
     r = setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, &on, sizeof(on));
     assert(r == 0);
     r = fcntl(fd, F_SETFL, O_NONBLOCK);
