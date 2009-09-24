@@ -3,6 +3,7 @@ use strict;
 use POE;
 use POE::Component::Server::TCP;
 use Getopt::Long;
+use POE::XS::Queue::Array; # this enhancments performance
 
 my $port = 9010;
 my $concurrent = 10;
