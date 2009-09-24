@@ -5,7 +5,7 @@ use Getopt::Long;
 use AnyEvent::Socket;
 use AnyEvent::Handle;
 
-my $concurrent = 2;
+my $concurrent = 2; # = number of CPU core or a few over
 my $port = 9010;
 GetOptions(
     'port=i' => \$port,
