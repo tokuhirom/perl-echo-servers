@@ -13,3 +13,11 @@ g++ -o echobench -I . testechoclient.c picoev_kqueue.c
 
 ./echobench -p 9090 -a 100 -c 100 -h 127.0.0.1 -n 100000
 
+= THANKS TO =
+
+kazuho
+nothingmuch
+adamk
+chansen
+hirose31
+
