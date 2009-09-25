@@ -20,7 +20,7 @@ d($_) for qw/
 
 sub d {
     my $c = shift;
-    Class::MOP::load_class($c);
-    print "$c: " . ${"$c\::VERSION"}, "\n";
+    eval { Class::MOP::load_class($c); };
+    printf "%-22s: %s\n", $c, ($@ ? "MISSING" : ${"$c\::VERSION"});
 }
 
