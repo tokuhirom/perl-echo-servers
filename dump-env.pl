@@ -1,7 +1,9 @@
 use Class::MOP;
+use Config;
 
 print "perl: $]\n";
-print $^O, "\n";
+print join(' ', $Config{osname}, $Config{osvers}, $Config{archname}), "\n";
+print "useithreads: ", $Config{useithreads} ? "yes" : "no", "\n";
 print "\n";
 
 d($_) for qw/
