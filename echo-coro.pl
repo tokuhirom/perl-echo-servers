@@ -20,8 +20,15 @@ my $sock = Coro::Socket->new(LocalHost => '0.0.0.0', LocalPort => $port, Listen 
 while (1) {
     my $csock = $sock->accept;
     async_pool {
-        while (my $line = <$csock>) {
-            print $csock $line;
+        my $nb_fh = $csock->fh;
+        my $buf   = \$csock->rbuf;
+        while (1) {
+            $csock->readable or last;
+            unless (sysread($nb_fh, $$buf, 8192)) {
+                last;
+            }
+            $csock->writable or last;
+            syswrite($csock, $$buf);
         }
     };
 }
