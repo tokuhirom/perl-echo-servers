@@ -4,6 +4,7 @@ use Getopt::Long;
 use IO::Socket::INET;
 use IO::Epoll;
 use Fcntl;
+use POSIX qw(:errno_h);
 
 my $concurrent = 10; # max event
 my $port = 9010;
@@ -49,11 +50,16 @@ while (1) {
         } else {
             ### >client: $ev->[0], $$
             open my $sock, "+<&=".$ev->[0] or die "fdopen: $!";
-            my $line = <$sock>;
-            if ($line) {
-                print $sock $line;
+            my $buf = "";
+            my $r = sysread $sock, $buf, 24;
+            #warn "[$r] <$buf> $ev->[0]\n";
+            if ($r) {
+                syswrite $sock, $buf, $r;
             } else {
                 ### no data: $ev->[0], $$
+                if (!defined $r && ($! == EINTR || $! == EAGAIN)) {
+                    next;
+                }
                 epoll_ctl($epfd, EPOLL_CTL_DEL, $ev->[0], 0) >= 0
                     || die "epoll_ctl: $!\n";
                 $Sock_Holder[$ev->[0]] = undef;
