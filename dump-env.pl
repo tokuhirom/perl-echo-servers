@@ -1,7 +1,9 @@
 use Class::MOP;
+use Config;
 
 print "perl: $]\n";
-print $^O, "\n";
+print join(' ', $Config{osname}, $Config{osvers}, $Config{archname}), "\n";
+print "useithreads: ", $Config{useithreads} ? "yes" : "no", "\n";
 print "\n";
 
 d($_) for qw/
@@ -20,7 +22,7 @@ d($_) for qw/
 
 sub d {
     my $c = shift;
-    Class::MOP::load_class($c);
-    print "$c: " . ${"$c\::VERSION"}, "\n";
+    eval { Class::MOP::load_class($c); };
+    printf "%-22s: %s\n", $c, ($@ ? "MISSING" : ${"$c\::VERSION"});
 }
 

@@ -1,5 +1,6 @@
 use strict;
 use warnings;
+use AnyEvent::Impl::EV;
 use AE;
 use Getopt::Long;
 use AnyEvent::Socket;

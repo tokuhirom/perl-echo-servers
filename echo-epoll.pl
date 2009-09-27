@@ -4,6 +4,7 @@ use Getopt::Long;
 use IO::Socket::INET;
 use IO::Epoll;
 use Fcntl;
+use POSIX qw(:errno_h);
 
 my $concurrent = 10; # max event
 my $port = 9010;
@@ -31,6 +32,52 @@ my $listener_fd = fileno $listener;
 epoll_ctl($epfd, EPOLL_CTL_ADD, $listener_fd, EPOLLIN) >= 0
     || die "epoll_ctl: $!\n";
 
+sub with_sysread {
+    my($ev) = @_;
+    open my $sock, "+<&=".$ev->[0] or die "fdopen: $!";
+
+    my $buf = "";
+    my $r = sysread $sock, $buf, 24;
+    #warn "[$r] <$buf> $ev->[0]\n";
+    if ($r) {
+        syswrite $sock, $buf, $r;
+    } else {
+        ### no data: $ev->[0], $$
+        if (!defined $r && ($! == EINTR || $! == EAGAIN)) {
+            next;
+        }
+        epoll_ctl($epfd, EPOLL_CTL_DEL, $ev->[0], 0) >= 0
+            || die "epoll_ctl: $!\n";
+        $Sock_Holder[$ev->[0]] = undef;
+        close $sock;
+    }
+}
+
+sub with_perlio {
+    my($ev) = @_;
+    open my $sock, "+<&=".$ev->[0] or die "fdopen: $!";
+
+    my $buf = <$sock>;
+    #warn "<$buf> $ev->[0]\n";
+    if ($buf) {
+        print $sock $buf;
+    } else {
+        ### no data: $ev->[0], $$
+        epoll_ctl($epfd, EPOLL_CTL_DEL, $ev->[0], 0) >= 0
+            || die "epoll_ctl: $!\n";
+        $Sock_Holder[$ev->[0]] = undef;
+        close $sock;
+    }
+}
+
+if ($ENV{USE_PERLIO}) {
+    print "use Perl IO\n";
+    *process_connection = \&with_perlio;
+} else {
+    print "use sysread, syswrite\n";
+    *process_connection = \&with_sysread;
+}
+
 while (1) {
     my $events = epoll_wait($epfd, $concurrent, -1); # Max 10 events returned, 1s timeout
 
@@ -48,17 +95,8 @@ while (1) {
                 || die "epoll_ctl: $!\n";
         } else {
             ### >client: $ev->[0], $$
-            open my $sock, "+<&=".$ev->[0] or die "fdopen: $!";
-            my $line = <$sock>;
-            if ($line) {
-                print $sock $line;
-            } else {
-                ### no data: $ev->[0], $$
-                epoll_ctl($epfd, EPOLL_CTL_DEL, $ev->[0], 0) >= 0
-                    || die "epoll_ctl: $!\n";
-                $Sock_Holder[$ev->[0]] = undef;
-                close $sock;
-            }
+            process_connection($ev);
         }
     }
 }
+
