@@ -1,6 +1,7 @@
 use strict;
 use warnings;
 use Getopt::Long;
+use Socket qw(IPPROTO_TCP TCP_NODELAY);
 use IO::Socket::INET;
 use IO::Epoll;
 use Fcntl;
@@ -89,8 +90,11 @@ while (1) {
             my $sock = $listener->accept;
             my $sock_fd = fileno $sock;
             $Sock_Holder[$sock_fd] = $sock;
+
+            setsockopt($sock, IPPROTO_TCP, TCP_NODELAY, 1);
             my $flags = fcntl($sock, F_GETFL, 0) or die "fcntl  GET_FL: $!";
             fcntl($sock, F_SETFL, $flags|O_NONBLOCK) or die "fcntl  SET_FL: $!";
+
             epoll_ctl($epfd, EPOLL_CTL_ADD, $sock_fd, EPOLLIN) >= 0
                 || die "epoll_ctl: $!\n";
         } else {
