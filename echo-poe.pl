@@ -8,7 +8,7 @@ use strict;
 # rm -rf nytprof nytprof.out ; perl -d:NYTProf echo-poe.pl ; nytprofhtml
 #
 # Client:
-#./echobench -p 9010 -a 100 -c 100 -h 127.0.0.1 -n 100000
+#./echobench -p 9010 -a 100 -c 100 -h 127.0.0.1 -n 10000
 
 # POE::XS::Queue::Array is automatically loaded if it's installed.
 
@@ -23,9 +23,9 @@ my $clients    = 0;
 my $port       = 9010;
 my $concurrent = 1;
 
+# Concurrent isn't an option.
 GetOptions(
   'port=i'       => \$port,
-  'concurrent=i' => \$concurrent,
 );
 
 POE::Session->create(

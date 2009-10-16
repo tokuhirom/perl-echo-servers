@@ -5,7 +5,7 @@ use warnings;
 use strict;
 
 # perl echo-poe.pl
-#./echobench -p 9010 -a 100 -c 100 -h 127.0.0.1 -n 100000
+#./echobench -p 9010 -a 100 -c 100 -h 127.0.0.1 -n 10000
 
 # POE::XS::Queue::Array is automatically loaded if it's installed.
 
