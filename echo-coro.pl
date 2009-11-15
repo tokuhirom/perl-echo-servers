@@ -6,7 +6,7 @@ use Coro::Semaphore;
 use Coro::EV;
 use Getopt::Long;
 
-my $concurrent = 10;
+my $concurrent =  shift @ARGV || 10;
 my $port = 9010;
 GetOptions(
     'port=i' => \$port,

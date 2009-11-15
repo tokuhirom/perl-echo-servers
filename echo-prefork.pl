@@ -6,7 +6,7 @@ use IO::Socket::INET;
 use Parallel::Prefork;
 
 my $concurrent = 10;
-my $port = 9040;
+my $port = 9010;
 GetOptions(
     'concurrent=s' => \$concurrent,
     'port=i'       => \$port,

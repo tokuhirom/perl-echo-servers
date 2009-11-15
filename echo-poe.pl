@@ -21,11 +21,12 @@ use IO::Handle;
 
 my $clients    = 0;
 my $port       = 9010;
-my $concurrent = 1;
+my $concurrent = 10;
 
 # Concurrent isn't an option.
 GetOptions(
   'port=i'       => \$port,
+  'concurrent=i' => \$concurrent,
 );
 
 POE::Session->create(

@@ -22,6 +22,7 @@ d($_) for qw/
 
 sub d {
     my $c = shift;
+    local $@;
     eval { Class::MOP::load_class($c); };
     printf "%-22s: %s\n", $c, ($@ ? "MISSING" : ${"$c\::VERSION"});
 }

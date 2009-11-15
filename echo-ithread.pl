@@ -6,7 +6,7 @@ use threads::shared;
 use IO::Socket::INET;
 
 my $concurrent = 10;
-my $port = 9090;
+my $port = 9010;
 GetOptions(
     'concurrent=s' => \$concurrent,
     'port=i' => \$port,
